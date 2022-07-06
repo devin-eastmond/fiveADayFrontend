@@ -1,0 +1,112 @@
+body {
+    background-color: #dee7c6;
+    color: #f1f1df;
+    font-family: 'Alata';
+}
+
+h4, input, footer, .form-check, .form-label {
+    font-family: 'Arimo'
+}
+
+.img-holder {
+    background-color: white;
+    width: 100%!important;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+h1 {
+    text-shadow: 1px 1px 3px #888888;
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+h4 {
+    font-size: 19px;
+}
+
+form {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #62ba2a;
+    padding: 40px 40px;
+    max-width: 600px;
+    border-top: solid 10px green;
+    border-bottom: solid 10px green;
+    margin-top: 25px;
+    margin-bottom: 50px;
+    box-shadow: 2px 2px 4px #888888;
+}
+
+.form-group {
+    margin-top: 40px;
+}
+
+.form-label {
+    font-family: 'Alata'!important;
+    margin-bottom: 10px;
+     font-size: 20px!important;
+}
+
+.form-control {
+    border-radius: 0px!important;
+    border: none!important;
+}
+
+.form-inline .form-control {
+    box-shadow: none!important;
+    margin-left: 5px;
+    width: 60%;
+}
+
+.form-check {
+    font-size: 16px;
+    transition: 0.2s;
+    background-color: white;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    color: #585;
+    user-select: none;
+}
+
+.form-check:hover {
+    background-color: #ddffcc;
+    cursor: pointer;
+}
+
+.form-check-input {
+    opacity: 0%!important;
+}
+
+.active  {
+    background-color: green!important;
+    color: #f1f1df;
+}
+
+.active:hover {
+    background-color: #090!important;
+}
+
+button {
+    color: white!important;
+    border-radius: 0%!important;
+    padding: 16px!important;
+    font-size: 20px!important;
+    margin-top: 20px;
+}
+
+button:focus {
+    outline: none!important;
+}
+
+footer {
+    background-color: #060;
+    padding: 20px;
+}
+
+footer a {
+    color: #f1f1df!important;
+}
