@@ -24,8 +24,21 @@ $("form").submit(function(event) {
     $.each($("input[name='why']:checked"), function(){
         whyParticipate.push($(this).val());
     });
-    alert("Handler for .submit() called: " + whyParticipate.join(", "));
-
+    console.log({
+      "name": name,
+      "email_address": email
+    });
+    $.ajax({
+      url: "https://n8pac5bb1j.execute-api.us-west-2.amazonaws.com/dev/subscribe",
+      method: "POST",
+      data: '{"name": "' + name + '", "email_address": "' + email + '"}',
+      dataType: "json",
+      success: function(data, status) {
+          if (status === "success") {
+              console.log("Email successfully subscribed!")
+          }
+      }
+    });
 });
 
 function selectOption(select, target) {
