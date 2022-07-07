@@ -1,11 +1,16 @@
 body {
-    background-color: #dee7c6;
-    color: #f1f1df;
-    font-family: 'Alata';
+    background-color: rgb(238 246 255);
+    color: black;
+    /* font-family: 'Alata'; */
+    font-family: 'Roboto', "Helvetica Neue", 'sans-serif';
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 h4, input, footer, .form-check, .form-label {
-    font-family: 'Arimo'
+    /* font-family: 'Arimo' */
 }
 
 .img-holder {
@@ -19,30 +24,44 @@ img {
 }
 
 h1 {
-    /* text-shadow: 1px 1px 3px #888888; */
     font-size: 36px;
     margin-bottom: 10px;
     margin-top: 40px;
     font-weight: bold;
 }
+/* h1 {
+  font-size: 36px;
+  margin-top: -91px;
+  margin-bottom: 30px;
+  color: white;
+  text-align: center;
+} */
 
 h4 {
     font-size: 19px;
+    line-height: 25px;
+    color: #555;
     /* margin-bottom: 60px; */
 }
 
 form {
     margin-left: auto;
     margin-right: auto;
-    background-color: #62ba2a;
-    padding: 40px 60px;
+    background-color: white;
+    padding: 40px 30px;
     max-width: 600px;
-    border-top: solid 10px green;
-    border-bottom: solid 10px green;
+    border-top: solid 40px #002E5D;
+    border-bottom: solid 40px #002E5D;
     margin-top: 25px;
     margin-bottom: 50px;
-    box-shadow: 2px 2px 4px #888888;
-    border-radius: 5px;
+    box-shadow: 8px 8px 16px #aaa;
+    border-radius: 20px;
+}
+
+@media screen and (min-width: 768px) {
+  form {
+    padding: 40px 70px;
+  }
 }
 
 .form-group {
@@ -50,37 +69,48 @@ form {
 }
 
 .form-label {
-    font-family: 'Alata'!important;
+    /* font-family: 'Alata'!important; */
     margin-bottom: 10px;
      font-size: 20px!important;
 }
 
 .form-control {
     /* border-radius: 0px!important; */
-    border: none!important;
+    /* border: none!important; */
+    height: 50px;
 }
 
 .form-inline .form-control {
     box-shadow: none!important;
-    margin-left: 5px;
-    width: 60%;
+    margin-left: 10px;
+    width: 75%;
+    height: 30px!important;
+    border: none!important;
+    border-radius: 0px;
     /* overflow: auto; */
+}
+
+@media screen and (max-width: 767px) {
+  .form-inline .form-control {
+      width: 60%;
+  }
 }
 
 .form-check {
     font-size: 16px;
     transition: 0.2s;
     background-color: white;
-    margin-bottom: 15px;
-    padding: 10px 15px;
-    color: #585;
+    margin-bottom: 10px;
+    padding: 15px 15px;
+    color: #666;
     user-select: none;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 
 .form-check:hover {
-    background-color: #ddffcc;
+    background-color: #efefef;
     cursor: pointer;
+    color: #444;
 }
 
 .form-check-input {
@@ -88,12 +118,13 @@ form {
 }
 
 .active  {
-    background-color: green!important;
-    color: #f1f1df;
+    background-color: #002E5D!important;
+    color: white;
 }
 
 .active:hover {
-    background-color: #090!important;
+    background-color: #103A6D!important;
+    color: white!important;
 }
 
 button {
@@ -102,6 +133,18 @@ button {
     padding: 16px!important;
     font-size: 20px!important;
     margin-top: 40px;
+
+}
+
+.btn-light {
+  background-color: white;
+  border: none!important;
+  border-radius: 7px;
+  /* transition: 0.4s!important; */
+}
+
+.btn-light:hover {
+  background-color: #efefef;
 }
 
 button:focus {
@@ -123,11 +166,11 @@ button:focus {
   margin-left: auto;
   margin-right: auto;
   padding: 35px;
-  margin-bottom: 100px;
+  /* margin-bottom: 100px; */
 }
 
 .success-message img {
-  max-width: 200px;
+  max-width: 300px;
   height: auto;
 }
 
@@ -136,24 +179,66 @@ button:focus {
 }
 
 .success-message a {
-  color: #070;
+  color: #002E5D;
 }
 
 .success-message a:hover {
-  color: #050;
+  color: #103A6D;
 }
 
 #success-check {
   font-size: 75px;
-  color: green;
+  color: #002E5D;
   margin-bottom: 25px;
 }
 
 footer {
-    background-color: #060;
+    background-color: #002E5D;
     padding: 20px;
+    display: flex;
+}
+
+.flex-left, .flex-right {
+  flex: 1;
+  float: right;
+}
+
+.flex-left img {
+  float: right;
+}
+
+.flex-right {
+  padding-top: 7px;
+  line-height: 25px;
+}
+
+footer img {
+  max-width: 150px;
+  height: auto;
 }
 
 footer a {
     color: #f1f1df!important;
+}
+
+#error-text {
+  text-align: center;
+  display: none;
+}
+
+.loader {
+  margin-top: 15px;
+  margin-bottom: -35px;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #002E5D;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  animation: spin 1.5s linear infinite;
+  opacity: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

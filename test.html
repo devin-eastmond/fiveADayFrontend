@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NTHK7Y9MZC"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-NTHK7Y9MZC');
+    </script>
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/hintsearch.js"></script>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        used maximum scale below to disable auto zoom on safari iphone when typing in text fields
+       -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="styles2.css">
+</head>
+@{
+    ViewBag.Title = "Geo Hint Record Search";
+}
+
+@*    SPLASH SCREEN, has been commented out for now,   uncomment this section and lines 798-825 and 754-760 to implement *@
+<div class="splashScreenDiv" id="splash">
+
+    <div class="splashTitleContainer">
+        <h3> <strong>BYU</strong> Record Linking Lab</h3>
+    </div>
+
+    <div class="splashHeader">
+        <div class="splashHeaderTitle"><h1> Map App Instructions</h1></div>
+    </div>
+
+    <div class="videoContainer">
+        <video class="video" controls poster="https://scontent-lax3-2.xx.fbcdn.net/v/t31.18172-8/18404072_114728015711472_8734736335073427641_o.jpg?_nc_cat=107&ccb=1-5&_nc_sid=973b4a&_nc_ohc=iM748KvY_YQAX-1T99Q&_nc_ht=scontent-lax3-2.xx&oh=f020a5a1a5e674c416e9fd29926e3a4c&oe=61BE0942">
+            <source src="../Content/Graphics/Customized Record Hints App Instructions.mp4">
+        </video>
+    </div>
+
+    <div class="splashContent">
+        <p>The Map App is a way of accessing customized family history hints based on a person’s surname or the county they lived in.   </p>
+        <ol>
+            <li>
+                Using the options button, choose what kind of task hint you want to generate. By default this application returns record attachment hints that can be
+                broken down into three difficulty categories.
+            </li>
+            <li>
+                Start by typing a surname or county a person lived in and pressing the search button. The application will load up to 200 results for your search.
+            </li>
+            <li>
+                Click one one of the marker pins you want to work on.
+                Click the blue text with the surname and place and it will take you directly to the FamilySearch sourcelinker on your browser. The first time you do this, you will need to log in FamilySearch.
+            </li>
+            <li>
+                Once you are in sourcelinker, compare the record information (which is on the left of the screen) with the information about the person on the Family Tree (which is on the right of the screen) and decide if the record should be attached.
+                If you think it is a match, click “compare”, then “add” to move the residence information over to the tree, and then “attach”.
+            </li>
+        </ol>
+        <p>
+            A document containing instructions can be found here <a href="https://docs.google.com/document/d/1MMoN7U5eNtrz3Yv3hnWjeRGs5ijwztg19QjNG_bQ4d8/edit"> Map App Instructions</a>
+            and a help video <a href="https://youtu.be/oMP722nH9OU">here</a>
+        </p>
+    </div>
+
+    <div class="doneButtonContainer">
+        <button type="button" class="btn btn-primary doneButton" onclick="closeHelp()">Done</button>
+    </div>
+
+</div>
+
+<div id="custom_shadow" onclick="closeNav()" class="shadow"></div>
+
+<div id="menuOptions" class="sidenav">
+    <div class="sidenav-container" style="position:absolute">
+
+
+        <div class="nav-header">
+            <a id="myBrand" href="https://rll.byu.edu/">@*<img id="byu_image" src="~/Content/Graphics/full-logo.png" />*@<span style="font-weight:800;">BYU</span> RLL HINTS</a>
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        </div>
+        <hr />
+        <p class="sidenav-title">Filter Options:</p>
+        <div class="checkbox-form">
+            <form>
+
+                <fieldset id="task-checks">
+                    <legend>Tasks:</legend>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" filterName="task-recordAttachment" checked>
+                        <label class="form-check-label" for="flexRadioDefault4">
+                            Record Attachment
+                        </label>
+                    </div>
+                    <fieldset id="filter-checks">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" filterName="diff-easy" checked>
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Easy
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" filterName="diff-med">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Medium
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" filterName="diff-hard">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Hard
+                            </label>
+                        </div>
+                    </fieldset>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" filterName="task-dup">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Possible Duplicates
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" filterName="task-connect">
+                        <label class="form-check-label" for="flexRadioDefault2">
+                            Connect Families
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" filterName="task-deathdate">
+                        <label class="form-check-label" for="flexRadioDefault3">
+                            Find Death Dates
+                        </label>
+                    </div>
+                </fieldset>
+                <div class="container center-block" style="width: auto; text-align: center">
+                    <div class="row">
+                        <!-- <button type="submit" class="btn btn-primary col-auto" id="apply-btn">Apply</button> -->
+                        <button class="btn btn-primary col-auto" id="reset-btn">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div class="newSearchButtonContainer" id="makeAnotherSearchButton">
+    <button class="newSearchButton" onclick="closeMakeAnotherSearch()">
+        Make Another Search
+    </button>
+</div>
+
+<div class="refreshButtonContainer" id="refreshSearchButton">
+    <button class="refreshSearch search">
+        Refresh
+    </button>
+</div>
+<!-- this part plus, lines 1060-1080, 338-354   -->
+
+<div class="myContainer info" id="searchContainer">
+    <div class="titleContainer">
+        <h3> <strong>BYU</strong> Record Linking Lab</h3>
+    </div>
+
+    <div class="bodyContent">
+        <h4>Customized Family History Hints</h4>
+        <p>
+            Welcome to the Map App! Generate customized record hints based on a person's
+            surname or the county they lived in. Filter by difficulty or type of hints
+            using the options button
+        </p>
+        <p margin-bottom: 5>Enter the surname or county you want to work on</p>
+        <div class="form-row justify-content-center component_container">
+
+            <div class="col-auto">
+                <label class="sr-only" for="name">Name</label>
+                <input type="text" name="surname" class="form-control mb-2 name" placeholder="Jones" autocomplete="off" style="margin: 0 auto;">
+            </div>
+            <div class="col-auto">
+                <div id="surname_container" style="position:relative; display:none; text-align:left; z-index:1500;">
+                    <div class="form-control" id="surname" style="height:unset; background-color:white; position:absolute;  ">
+                        @*This is where the suggestions javascript generated suggestions would go inside of*@
+                    </div>
+                </div>
+                <input name="location" class="form-control location" type="text" style="margin: 0 auto;" placeholder="Bamberg, South Carolina" autocomplete="off" />
+                <div id="location_container" style="position:relative; display:none;">
+                    <div class="form-control" id="location" style="height:unset; background-color:white; position:absolute;  margin:4px;">
+                        @*This is where the suggestions would go inside of*@
+                    </div>
+                </div>
+            </div>
+            <div id="noResults">
+                <p>No results returned. Check your spelling or try a new search.</p>
+            </div>
+            <div class="col-auto">
+
+                <button type="submit" class="btn btn-primary mb-2 search searchbtn">Search</button>
+                <button type="button" class="btn btn-primary searchbtn" onclick="openNav()">Options</button>
+            </div>
+        </div>
+    </div>
+
+    @* SPLASH SCREEN HELP BUTTON  *@
+    <div class="help">
+        <div class="helpContainer" onclick="openHelp()">
+            <p>Need Help?</p>
+        </div>
+    </div>
+
+    <div class="footerContainer">
+        <p>A project of the BYU Record Linking Lab<br />&copy 2021 All Rights Reserved</p>
+    </div>
+
+
+</div>
+
+<script>
+    function openNav() {
+        document.getElementById("menuOptions").style.left = "0";
+        //document.getElementById("custom_shadow").style.display = "block";
+        document.getElementById("custom_shadow").style.width = "100%";
+        document.getElementById("custom_shadow").style.height = "100%";
+        const animatePromise = document.getElementById("custom_shadow").animate([{ background: "rgba(255, 255, 255, 0)", backdropFilter: "blur(0px)"}, { background: "rgba(0, 0, 0, .3)", backdropFilter: "blur(2px)" }], { duration: 300 }).finished;
+        animatePromise.then(() => {
+            document.getElementById("custom_shadow").style.background = "rgba(0, 0, 0, .3)";
+            document.getElementById("custom_shadow").style.backdropFilter = "blur(2px)";
+        });
+    }
+    function closeNav() {
+        document.getElementById("menuOptions").style.left = "-320px";
+        const animatePromise = document.getElementById("custom_shadow").animate([{ background: "rgba(0, 0, 0, .3)", backdropFilter: "blur(2px)" }, { background: "rgba(255, 255, 255, 0)", backdropFilter: "blur(0px)" }], { duration: 300 }).finished;
+        document.getElementById("splash").style.display = "none";
+        animatePromise.then(() => {
+            document.getElementById("custom_shadow").style.background = "rgba(255, 255, 255, 0)";
+            document.getElementById("custom_shadow").style.width = "0";
+            document.getElementById("custom_shadow").style.height = "0";
+            document.getElementById("custom_shadow").style.backdropFilter = "blur(0px)";
+        });
+        applyOptions();
+    }
+    @*   SPLASH SCREEN OPEN/CLOSE FUNCTIONS   *@
+    function openHelp() {
+        document.getElementById("splash").style.display = "block";
+        document.getElementById("custom_shadow").style.width = "100%";
+        document.getElementById("custom_shadow").style.height = "100%";
+        const animatePromise = document.getElementById("custom_shadow").animate([{ background: "rgba(255, 255, 255, 0)", backdropFilter: "blur(0px)" }, { background: "rgba(0, 0, 0, .3)", backdropFilter: "blur(2px)" }], { duration: 300 }).finished;
+        animatePromise.then(() => {
+            document.getElementById("custom_shadow").style.background = "rgba(0, 0, 0, .3)";
+            document.getElementById("custom_shadow").style.backdropFilter = "blur(2px)";
+        });
+    }
+    function closeHelp() {
+        const animatePromise = document.getElementById("custom_shadow").animate([{ background: "rgba(0, 0, 0, .3)", backdropFilter: "blur(2px)" }, { background: "rgba(255, 255, 255, 0)", backdropFilter: "blur(0px)" }], { duration: 300 }).finished;
+        document.getElementById("splash").style.display = "none";
+        animatePromise.then(() => {
+            document.getElementById("custom_shadow").style.background = "rgba(255, 255, 255, 0)";
+            document.getElementById("custom_shadow").style.width = "0";
+            document.getElementById("custom_shadow").style.height = "0";
+            document.getElementById("custom_shadow").style.backdropFilter = "blur(0px)";
+        });
+    }
+</script>
+
+<!-- Results -->
+<div id="mapid"></div>
+
+<!--
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+-->
+<script type="text/javascript">
+    // Create map
+    var map = L.map('mapid', { preferCanvas: true, zoomControl: false }).setView([28.304381, -43.066406], 3);   //changed to start in different place on map load
+    //As of 8/18/21 this is a new layer that doesn't cost the lab any money to use instead of mapbox
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', { foo: 'bar', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+    L.control.zoom({
+        position: 'topright'
+    }).addTo(map);
+    //L.tileLayer('mapbox.mapbox-streets-v11').addTo(map)
+    let filter = [];
+    let first = true;
+    let token = null;
+    // Name Search
+    $('.search').click(function () {
+        // Clear markers
+        map.eachLayer(function (layer) {
+            if (!layer._container) map.removeLayer(layer);
+        });
+        // Get tree results
+        let name = $('.name').val();
+        let location = $('.location').val();
+        let filterString = "";
+        if (filter.length != 0) {
+            filter.forEach(e => {
+                filterString += `&filter=${e}`;
+            });
+        } else {
+            filterString = "&filter=default";
+        }
+        fetch("../Main/Populate?name=" + name + "&location=" + location + filterString, { method: "post" })
+            .then(function (rsp) { return rsp.json() })
+            .then(function (obj) {
+                if (obj == "[]") {
+                    noResults();
+                } else {
+                    hasResults();
+                    if (obj.length > 10) {
+                        obj = JSON.parse(obj);
+                    }
+                    console.log(obj);
+                    let lastLat = 0;
+                    let lastLong = 0;
+                    let maxLat = obj[0]['Latitude'];
+                    let minLat = obj[0]['Latitude'];
+                    let maxLong = obj[0]['Longitude'];
+                    let minLong = obj[0]['Longitude'];
+                    token = obj.token;
+                    let color = '#2A81CB'
+                    for (var i = 0; i < obj.length; i++) {
+                        let lat = obj[i]['Latitude'];
+                        let lon = obj[i]['Longitude'];
+                        if (lat > maxLat) {
+                            maxLat = lat;
+                        }
+                        if (lat < minLat) {
+                            minLat = lat;
+                        }
+                        if (lon > maxLong) {
+                            maxLong = lon;
+                        }
+                        if (lon < minLong) {
+                            minLong = lon;
+                        }
+                        let keystring = obj[i]['County'] + ", " + obj[i]['State'];
+                        if (keystring.toLowerCase().includes(location.toLowerCase())) {
+                            lastLat = lat;
+                            lastLong = lon;
+                        }
+                        if (obj[i]['Color'] !== null) {
+                            color = obj[i]['Color']
+                        }
+                        let pinColor;
+                        if (color == 'blue') {
+                            pinColor = '#3c74ca';
+                        } else if (color == 'black') {
+                            pinColor = '#3c3439';
+                        } else if (color == 'green') {
+                            pinColor = '#239541';
+                        } else {
+                            pinColor = '#EA4335';
+                        }
+                        //L.marker([lat, lon], { color: color, radius: 3 }).addTo(map).bindPopup('<a href="' + obj[i]['Url'] + '" target="_blank" style="display:block; text-align:center;" onclick="testing(this);" ontouchstart="testing(this);" class="markerSubmit" data-pid="' + obj[i]['Pid'] + '" data-ark="' + obj[i]['Ark'] + '"><span class=""><img width="64" src="/Content/Graphics/120px-Circle-icons-profile.svg.png"><br />' + obj[i]['Surname'] + '<br />' + obj[i]['County'] + ', ' + obj[i]['State'] + '</span></a>');
+                        icon = L.divIcon({
+                            className: 'custom-div-icon',
+                            html: "<div style='background-color: " + pinColor + "' class='marker-pin'></div>",
+                            iconSize: [30, 42],
+                            iconAnchor: [15, 42]
+                        });
+                        L.marker([lat, lon], { icon: icon, radius: 3 }).addTo(map).bindPopup('<a href="' + obj[i]['Url'] + '" target="_blank" style="display:block; text-align:center;" onmousedown="_markerOnClick()" ontouchstart="_markerOnClick()" class="markerSubmit" data-pid="' + obj[i]['Pid'] + '" data-ark="' + obj[i]['Ark'] + '" data-url="' + obj[i]['Url'] + '"><span class=""><img width="64" src="/Content/Graphics/120px-Circle-icons-profile.svg.png"><br />' + obj[i]['Surname'] + '<br />' + obj[i]['County'] + ', ' + obj[i]['State'] + '</span></a>');
+                    }
+                    if (name == "" || !(lastLat == 0 && lastLong == 0)) {
+                        if (first || document.getElementById('refreshSearchButton').style.visibility == "hidden") {
+                            first = false;
+                            console.log("minLat: ", minLat);
+                            console.log("maxLat: ", maxLat);
+                            console.log("minLon: ", minLong);
+                            console.log("maxLon: ", maxLong);
+                            let averageLat = (minLat + maxLat) / 2;
+                            let averageLon = (minLong + maxLong) / 2;
+                            let diffLat = maxLat - minLat;
+                            let diffLon = maxLong - minLong;
+                            console.log("diffLat: ", diffLat);
+                            console.log("diffLon: ", diffLon);
+                            let zoom = 0;
+                            if (diffLat < 0.325 && diffLon < 0.1) {
+                                zoom = 14;
+                            } else if (diffLat < 0.75 && diffLon < 0.2) {
+                                zoom = 13;
+                            } else if (diffLat < 1.5 && diffLon < 0.4) {
+                                zoom = 12;
+                            } else if (diffLat < 3 && diffLon < 0.8) {
+                                zoom = 11;
+                            } else if (diffLat < 5 && diffLon < 1.5) {
+                                zoom = 10;
+                            } else if (diffLat < 8 && diffLon < 3) {
+                                zoom = 9;
+                            } else if (diffLat < 20 && diffLon < 7) {
+                                zoom = 8;
+                            } else if (diffLat < 40 && diffLon < 15) {
+                                zoom = 7;
+                            } else if (diffLat < 85 && diffLon < 32) {
+                                zoom = 6;
+                            } else if (diffLat < 170 && diffLon < 70) {
+                                zoom = 5;
+                            } else if (diffLat < 300 && diffLon < 110) {
+                                zoom = 4;
+                            } else {
+                                zoom = 3;
+                            }
+                            console.log("Zoom: ", zoom);
+
+
+                            console.log("Average: ", averageLat,", ", averageLon);
+                            map.flyTo([averageLat, averageLon], zoom, {
+                                animate: true,
+                                duration: 1
+                            });
+                            console.log(lastLong);
+                            console.log(lastLat);
+                        }
+                    }
+                    makeAnotherSearch();
+                }
+            });
+    });
+
+    $('input[name=surname], input[name=location]').keyup(function () {
+        var result = $(this).val();
+        var attribute;
+        var controller;
+        if (this.getAttribute('name') === 'surname') {
+            attribute = this.getAttribute('name');
+            attribute.charAt(0).toUpperCase();
+        }
+        else {
+            attribute = this.getAttribute('name');
+            attribute.charAt(0).toUpperCase();
+        }
+
+        let filterString = "";
+        if (filter.length != 0) {
+            filter.forEach(e => {
+                filterString += `&filter=${e}`;
+            });
+        } else {
+            filterString = "&filter=default";
+        }
+
+        $.ajax({
+            url: '../Main/Retrieve' + attribute + '?data=' + String(result) + filterString,
+            type: "post",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(
+                {
+                    'surname': result
+                }),
+            success: function (response) {
+                if (response.length < 3) {
+                    $('#' + attribute + '_container').hide();
+                }
+                else {
+                    response = JSON.parse(response);
+                    $('#' + attribute).html("");
+                    response.forEach(function (name) {
+                        $('#' + attribute).append('<div class="suggestion"><label value=' + name + '>' + name + '</label></div>');
+                        let suggest_box = document.getElementById(attribute);
+                        if (suggest_box.childElementCount < 1) {
+                            $('#' + attribute + '_container').hide();
+                        }
+                        else {
+                            $('#' + attribute + '_container').show();
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        const params = new URLSearchParams(window.location.search);
+        const geo = params.get("geo");
+        console.log(geo);
+        if (geo) {
+            $('.location').val(geo);
+            $('.search').click();
+        }
+    });
+    var makeAnotherSearch = function () {
+        document.getElementById('searchContainer').style.visibility = "hidden";
+        document.getElementById('makeAnotherSearchButton').style.visibility = "visible";
+        document.getElementById('refreshSearchButton').style.visibility = "visible";
+    };
+    var refreshSearch = function() {
+        console.log("search refresh");
+        document.getElementById('searchContainer').style.visibility = "hidden";
+        document.getElementById('makeAnotherSearchButton').style.visibility = "visible";
+        document.getElementById('refreshSearchButton').style.visibility = "visible";
+    }
+    var closeMakeAnotherSearch = function () {
+        document.getElementById('searchContainer').style.visibility = "visible";
+        document.getElementById('makeAnotherSearchButton').style.visibility = "hidden";
+        document.getElementById('refreshSearchButton').style.visibility = "hidden";
+        let zoom = 3; //original start zoom
+        map.flyTo([28.304381, -43.066406], zoom, {
+            animate: true,
+            duration: 1
+        });
+        // Clear markers
+        map.eachLayer(function (layer) {
+            if (!layer._container) map.removeLayer(layer);
+        });
+    }
+    var noResults = function () {
+        document.getElementById('noResults').style.display = "block"
+    }
+    var hasResults = function () {
+        document.getElementById('noResults').style.display = "none"
+    }
+    var _markerOnClick = function () {
+        var pid = $('.markerSubmit').attr('data-pid');
+        var ark = $('.markerSubmit').attr('data-ark');
+        var url = $('.markerSubmit').attr('data-url');
+        $.ajax({
+            url: '../Main/ScoreMarker?pid=' + String(pid) + '&ark=' + String(ark) + '&url=' + String(url),
+            type: "post",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(
+                {
+                    'pid': pid,
+                    'ark': ark,
+                    'url': url
+                }),
+            success: function (response) {
+            }
+        });
+    }
+    // Search on Enter key
+    $('.name').keypress(function (e) { if (e.which == 13) { $('.search').click() } });
+    //Disable Checkmarks if not on Record Attachment
+    $("#task-checks input").click((e) => {
+        if (!$('#flexRadioDefault4').prop("checked")) {
+            $('#filter-checks input').each(function () {
+                $(this).prop("disabled", true);
+            });
+        } else {
+            $('#filter-checks input').each(function () {
+                $(this).prop("disabled", false);
+            });
+        }
+    });
+    var applyOptions = function () {
+        filter = [];
+        $('#filter-checks .form-check-input,#task-checks .form-check-input').filter(':checked:enabled').each(function () {
+            const filterName = $(this).attr('filterName');
+            filter.push(filterName);
+        });
+    }
+    //Apply Options/Filter
+    $('#apply-btn').click((e) => {
+        e.preventDefault();
+        applyOptions();
+        closeNav();
+    });
+    //Reset Filter
+    $('#reset-btn').click((e) => {
+        e.preventDefault();
+        filter = [];
+        $("#filter-checks input").each(function () {
+            $(this).prop("disabled", false);
+            if ($(this).attr("filterName") == "diff-easy") {
+                $(this).prop("checked", true);
+            } else {
+                $(this).prop("checked", false);
+            }
+        });
+        /*$("#flexRadioDefault1").prop("checked", false);
+        $("#flexRadioDefault2").prop("checked", false);
+        $("#flexRadioDefault3").prop("checked", false);*/
+        $("#flexRadioDefault4").prop("checked", true);
+    });
+</script>
+</html>

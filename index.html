@@ -9,12 +9,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-    <link href='https://fonts.googleapis.com/css?family=Alata' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet'>
 </head>
 <body>
 <div class="container">
     <form>
+
         <center class="img-holder"><a href="https://rll.byu.edu/" target="_blank"><img src="images/download.jpeg"></a></center>
         <h1>5-a-Day Project Sign Up</h1>
         <h4>Sign up to receive five record hints every weekday!</h4>
@@ -29,36 +30,47 @@
         <div class="form-group" id="inputWhy">
             <label class="form-label">Why are you deciding to participate in this project?</label>
             <label class="form-check option" for="check1">
-                <input type="checkbox" class="form-check-input" id="check1" name="why" value="I'm passionate about helping others with their family history.">
+                <input type="checkbox" class="form-check-input" id="check1" name="why" value="I'm passionate about helping others with their family history">
                 <span class="glyphicon glyphicon-unchecked"></span>
                 I'm passionate about helping others with their family history.
             </label>
             <label class="form-check option" for="check2">
-                <input type="checkbox" class="form-check-input" id="check2" name="why" value="I want to do more family history and this seems like a good place to start.">
+                <input type="checkbox" class="form-check-input" id="check2" name="why" value="I want to do more family history and this seems like a good place to start">
                 <span class="glyphicon glyphicon-unchecked"></span>
                 I want to do more family history and this seems like a good place to start.
             </label>
             <label class="form-check option" for="check3">
                 <span class="glyphicon glyphicon-unchecked"></span>
                 I'm busy so this small way to serve is perfect.
-                <input type="checkbox" class="form-check-input" id="check3" name="why" value="I'm busy so this small way to serve is perfect.">
+                <input type="checkbox" class="form-check-input" id="check3" name="why" value="I'm busy so this small way to serve is perfect">
             </label>
             <label class="form-check option" for="check4">
-                <input type="checkbox" class="form-check-input" id="check4" name="why" value="This project was referred to me by a friend or relative.">
+                <input type="checkbox" class="form-check-input" id="check4" name="why" value="This project was referred to me by a friend or relative">
                 <span class="glyphicon glyphicon-unchecked"></span>
                 This project was referred to me by a friend or relative.
             </label>
             <label class="form-check form-inline option" for="check5">
-                <span class="glyphicon glyphicon-unchecked"></span>
-                &nbsp;Other:
+                <span>
+                    <span class="glyphicon glyphicon-unchecked"></span>
+                    Other:
+                </span>
                 <input class="form-control" id="inputOther">
                 <input type="checkbox" class="form-check-input" name="why" id="check5">
             </label>
-            <center><button type="submit" class="btn btn-light">Subscribe</button></center>
+            <center><button id="subscribe-btn" type="submit" class="btn btn-light">Subscribe</button></center>
+            <p class="text-danger" id="error-text">An error occurred. Please try again later.</p>
+            <center><div class="loader"></div></center>
         </div>
     </form>
 </div>
-<footer><center>© <span class="footer-year">2022</span> - <a href="https://rll.byu.edu/" target="_blank">BYU Record Linking Lab</a></center></footer>
-</body>
+<footer>
+    <div class="flex-left">
+      <a href="https://www.byu.edu/" target="_blank"><img src="images/byuLogo.png"></a>
+    </div>
+    <div class="flex-right">
+      <div><a href="https://rll.byu.edu/" target="_blank">Record Linking Lab</a></div>
+      <div><a href="https://familytech.byu.edu/" target="_blank">Family History Technology Lab</a></div>
+    </div>
+</footer>
 <script src="script.js"></script>
 </html>
