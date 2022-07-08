@@ -192,6 +192,12 @@ button:focus {
   margin-bottom: 25px;
 }
 
+#error-symbol {
+  font-size: 75px;
+  color: #a00;
+  margin-bottom: 25px;
+}
+
 footer {
     background-color: #002E5D;
     padding: 20px;
@@ -218,7 +224,7 @@ footer img {
 }
 
 footer a {
-    color: #f1f1df!important;
+    color: white!important;
 }
 
 #error-text {

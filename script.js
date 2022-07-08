@@ -1,8 +1,9 @@
-$( window ).on( "load", function() {
+const API_ENDPOINT = "https://n8pac5bb1j.execute-api.us-west-2.amazonaws.com/dev";
+const API_PATH = "subscribe";
+
+$(window).on("load", function() {
   $("form").get(0).reset()
 });
-
-$('.footer-year').text(new Date().getFullYear())
 
 $("#inputOther").on("input", function(event) {
     let target = $(event.target);
@@ -35,14 +36,13 @@ $("form").submit(function(event) {
     $('#subscribe-btn').prop("disabled",true);
     $('.loader').css("opacity", 1);
     $.ajax({
-      url: "https://n8pac5bb1j.execute-api.us-west-2.amazonaws.com/dev/subscribe",
+      url: API_ENDPOINT + "/" + API_PATH,
       method: "POST",
       data: '{"name": "' + name + '", "email_address": "' + email + '", "why_participating": "' + whyParticipating.join(', ') + '"}',
       dataType: "json",
     })
     .done(function (jqXHR) {
       window.location.href = "success.html";
-      $('#subscribe-btn').prop("disabled",false);
     })
     .fail(function (jqXHR) {
       $('#error-text').css("display", "block");
